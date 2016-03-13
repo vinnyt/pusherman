@@ -1,23 +1,23 @@
 package main
 
 import (
-	"io"
-	"encoding/json"
-	"net/http"
 	"crypto/tls"
-  apns "github.com/sideshow/apns2"
-  "github.com/sideshow/apns2/certificate"
-	. "github.com/sideshow/apns2/payload"
-  "log"
+	"encoding/json"
 	"flag"
+	apns "github.com/sideshow/apns2"
+	"github.com/sideshow/apns2/certificate"
+	. "github.com/sideshow/apns2/payload"
+	"io"
+	"log"
+	"net/http"
 )
 
 // internal push representation
 type notification struct {
-	token string
+	token   string
 	message string
-	sound string
-	badge int
+	sound   string
+	badge   int
 }
 
 // POST request to / with JSON body
@@ -31,13 +31,12 @@ type notification struct {
 //   "extra": ""
 // }
 type PushRequest struct {
-	Tokens []string `json:"tokens"`
-	Message string `json:"message"`
-	Badge int `json:"badge"`
-	Sound string `json:"sound"`
-	Extra string `json:"extra"`
+	Tokens  []string `json:"tokens"`
+	Message string   `json:"message"`
+	Badge   int      `json:"badge"`
+	Sound   string   `json:"sound"`
+	Extra   string   `json:"extra"`
 }
-
 
 func worker(input <-chan notification, cert tls.Certificate, topic string, production bool) {
 	// TODO pass in environment
@@ -53,7 +52,7 @@ func worker(input <-chan notification, cert tls.Certificate, topic string, produ
 	// loop on the channel and send when something
 	// is ready to send
 	for messageParts := range input {
-		log.Println("Sending message to: ",messageParts.token)
+		log.Println("Sending message to: ", messageParts.token)
 
 		payload := NewPayload()
 
@@ -84,23 +83,22 @@ func worker(input <-chan notification, cert tls.Certificate, topic string, produ
 	}
 }
 
-
 // handle web request this function returns a handler function
 func requestHandler(messages chan notification) func(w http.ResponseWriter, r *http.Request) {
-	return func (w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		// we parse the body of the request
 		decoder := json.NewDecoder(r.Body)
-    var t PushRequest
-    err := decoder.Decode(&t)
+		var t PushRequest
+		err := decoder.Decode(&t)
 
 		// it wasn't good
-    if err != nil {
-        io.WriteString(w,"bad")
-    } else {
+		if err != nil {
+			io.WriteString(w, "bad")
+		} else {
 			// loop on tokens and write to channel for each token
-			for _,token := range t.Tokens {
-				log.Println("Token:",token)
-					messages <- notification{token: token, message: t.Message, badge: t.Badge}
+			for _, token := range t.Tokens {
+				log.Println("Token:", token)
+				messages <- notification{token: token, message: t.Message, badge: t.Badge}
 			}
 
 			io.WriteString(w, "Hello world!")
@@ -117,13 +115,13 @@ func main() {
 
 	// open the cert
 	// should probably exit here
-  cert, pemErr := certificate.FromPemFile("../cert.pem", "")
-  if pemErr != nil {
-    log.Println("Cert Error:", pemErr)
-  }
+	cert, pemErr := certificate.FromPemFile("../cert.pem", "")
+	if pemErr != nil {
+		log.Println("Cert Error:", pemErr)
+	}
 
 	// kick off some workers
-  go worker(messages, cert, *topicPtr, *environmentPtr)
+	go worker(messages, cert, *topicPtr, *environmentPtr)
 	go worker(messages, cert, *topicPtr, *environmentPtr)
 
 	// http worker
