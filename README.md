@@ -1,5 +1,5 @@
 # pusherman
-a golang based web service API for sending APN(s).  The goal of pusherman is to provide a webservice that can be communicated with to easily send push notifications.  The webservice should be responsible for things like queuing and maintenance of persistent connections as dictated by APNS and eventually the Android equivalent.
+a golang based microweb service API for sending Push Notifications.  The goal of pusherman is to provide a webservice that can be communicated with to easily send push notifications.  The webservice should be responsible for things like queuing and maintenance of persistent connections as dictated by APNS and eventually the Android equivalent.  Currently only APNS is supported
 
 ## Install
 
