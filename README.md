@@ -29,3 +29,5 @@ Please file issues and pull requests
 My design philosophy was to create an easily configurable and robustly running service that could be launched with minimal systems requirements and easily communicated with to support push requirements for various applications.
 
 I would like to thank [Adam Jones](https://github.com/sideshow) for the [library](https://github.com/sideshow/apns2) that I use to talk to the APNS gatewy
+
+looking for someone to help!
