@@ -38,6 +38,8 @@ type PushRequest struct {
 	Extra   string   `json:"extra"`
 }
 
+
+// this is the worker
 func worker(input <-chan notification, cert tls.Certificate, topic string, production bool) {
 	// TODO pass in environment
 	client := apns.NewClient(cert)
