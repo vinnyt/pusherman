@@ -1,5 +1,6 @@
 package main
 
+
 import (
 	"crypto/tls"
 	"encoding/json"
@@ -52,7 +53,7 @@ func worker(input <-chan notification, cert tls.Certificate, topic string, produ
 	// loop on the channel and send when something
 	// is ready to send
 	for messageParts := range input {
-		log.Println("Sending message to: ", messageParts.token)
+		log.Println("Sending message to this user: ", messageParts.token)
 
 		payload := NewPayload()
 
